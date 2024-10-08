@@ -25,15 +25,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/hooks/auth";
 
 const formSchema = z.object({
-  email: z.string(),
-  password: z.string(),
+  email: z.string().min(1),
+  password: z.string().min(1),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 export function LoginForm() {
+  const { login } = useAuth({ middleware: "guest" });
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,14 +48,13 @@ export function LoginForm() {
   const [isPending, startTransition] = useTransition();
 
   function handleSubmit(data: FormValues) {
-    startTransition(() => {
-      console.log(data);
+    startTransition(async () => {
+      const result = await login(data);
 
-      // TODO: Handle login
-
-      form.resetField("password");
-
-      toast.error("Not implemented yet");
+      if (!result.success) {
+        toast.error(result.error);
+        form.resetField("password");
+      }
     });
   }
 
