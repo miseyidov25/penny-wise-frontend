@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Header } from "@/components/header";
 import { buttonVariants } from "@/components/ui/button";
 
+import { RegisterForm } from "./register-form";
+
 export default function Register() {
   return (
     <div className="grid min-h-screen grid-rows-[auto,_1fr,_auto]">
@@ -15,7 +17,9 @@ export default function Register() {
         </Link>
       </Header>
 
-      <main></main>
+      <main className="container max-w-screen-sm py-8">
+        <RegisterForm />
+      </main>
     </div>
   );
 }
