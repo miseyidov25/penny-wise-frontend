@@ -88,7 +88,7 @@ export const useAuth = ({
     if (!error) {
       await axiosInstance.post("/logout");
 
-      mutate();
+      mutate(undefined);
     }
 
     router.push("/");
