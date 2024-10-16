@@ -1,11 +1,16 @@
+"use client";
+
 import Link from "next/link";
 
 import { Header } from "@/components/header";
 import { buttonVariants } from "@/components/ui/button";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/auth";
 
 export default function Home() {
+  useAuth({ middleware: "guest" });
+
   return (
     <div className="grid min-h-screen grid-rows-[auto,_1fr,_auto]">
       <Header>
