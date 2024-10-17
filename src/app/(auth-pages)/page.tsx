@@ -1,12 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 import { Header } from "@/components/header";
 import { buttonVariants } from "@/components/ui/button";
-import Image from "next/image";
-import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/auth";
+import { cn } from "@/lib/utils";
 
 export default function Home() {
   useAuth({ middleware: "guest" });
@@ -31,7 +31,7 @@ export default function Home() {
             </h1>
 
             <p className="text-lg text-muted-foreground">
-              Managing your money shouldn't be complicated. With PennyWise,
+              Managing your money shouldn&apos;t be complicated. With PennyWise,
               track your income and expenses effortlessly, build smarter
               budgets, and make informed financial decisions.
             </p>
