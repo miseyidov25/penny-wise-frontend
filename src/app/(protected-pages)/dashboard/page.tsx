@@ -1,21 +1,22 @@
 "use client";
 
-import { Header } from "@/components/header";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/auth";
+import { AddTransactionForm } from "@/features/transactions/add-transaction-form";
+import { type AddTransactionValues } from "@/features/transactions/schemas";
+import { axiosInstance } from "@/lib/axios";
+
+const categories = ["Food", "Transport", "Entertainment", "Health", "Shopping"];
 
 export default function Dashboard() {
-  const { logout } = useAuth({ middleware: "auth" });
+  async function onSubmit(values: AddTransactionValues) {
+    const response = await axiosInstance.post("api/transactions", values);
+    console.log(response.data);
+  }
 
   return (
     <div className="grid min-h-screen grid-rows-[auto,_1fr,_auto]">
-      <Header>
-        <Button onClick={() => logout()} variant="secondary">
-          Log out
-        </Button>
-      </Header>
-
-      <main className="container py-8"></main>
+      <main className="container max-w-screen-sm py-8">
+        <AddTransactionForm onSubmit={onSubmit} categories={categories} />
+      </main>
     </div>
   );
 }
