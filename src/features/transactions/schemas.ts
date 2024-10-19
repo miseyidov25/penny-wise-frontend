@@ -11,5 +11,3 @@ export const addTransactionSchema = z.object({
   description: z.string().max(255).optional(),
   date: z.string().transform((value) => new Date(value).toISOString()),
 });
-
-export type AddTransactionValues = z.infer<typeof addTransactionSchema>;

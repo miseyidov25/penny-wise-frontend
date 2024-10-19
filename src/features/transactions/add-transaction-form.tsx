@@ -1,10 +1,20 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ReloadIcon } from "@radix-ui/react-icons";
+import { PlusIcon } from "@radix-ui/react-icons";
 import { useForm } from "react-hook-form";
 
 import { AutocompleteInput } from "@/components/ui/autocomplete-input";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -17,116 +27,140 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-import { addTransactionSchema, type AddTransactionValues } from "./schemas";
+import { addTransactionSchema } from "./schemas";
+import type { AddTransactionPayload } from "./types";
 
 export function AddTransactionForm({
   onSubmit,
   categories,
+  isPending,
+  className,
 }: {
-  onSubmit: (values: AddTransactionValues) => void;
+  onSubmit: (values: AddTransactionPayload) => void;
   categories: string[];
+  isPending?: boolean;
+  className?: string;
 }) {
-  const form = useForm<AddTransactionValues>({
+  const form = useForm<AddTransactionPayload>({
     resolver: zodResolver(addTransactionSchema),
     defaultValues: {
       category_name: "",
-      amount: "0",
+      amount: "0.00",
       description: "",
       date: new Date().toISOString().split("T")[0],
     },
   });
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="amount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Amount</FormLabel>
+    <Dialog>
+      <DialogTrigger className={className}>
+        <PlusIcon />
+      </DialogTrigger>
 
-                <FormControl>
-                  <Input
-                    placeholder="29.99"
-                    type="number"
-                    step=".01"
-                    {...field}
-                  />
-                </FormControl>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add transaction</DialogTitle>
 
-                <FormDescription>
-                  Amount of money spent or earned. Use a negative value for
-                  expenses.
-                </FormDescription>
+          <DialogDescription>
+            Add a new transaction to this wallet.
+          </DialogDescription>
+        </DialogHeader>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="amount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Amount</FormLabel>
 
-          <FormField
-            control={form.control}
-            name="date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="29.99"
+                        type="number"
+                        step=".01"
+                        {...field}
+                      />
+                    </FormControl>
 
-                <FormControl>
-                  <Input type="date" {...field} />
-                </FormControl>
+                    <FormDescription>
+                      Amount of money spent or earned. Use a negative value for
+                      expenses.
+                    </FormDescription>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description</FormLabel>
+              <FormField
+                control={form.control}
+                name="category_name"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Category</FormLabel>
 
-                <FormControl>
-                  <Textarea
-                    placeholder="Paid for a gym membership for April"
-                    {...field}
-                  />
-                </FormControl>
+                    <AutocompleteInput
+                      setValue={(value) =>
+                        form.setValue("category_name", value)
+                      }
+                      value={field.value}
+                      options={categories}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <FormDescription>
-                  Optional description of the transaction.
-                </FormDescription>
+              <FormField
+                control={form.control}
+                name="date"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Date</FormLabel>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
 
-          <FormField
-            control={form.control}
-            name="category_name"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Category</FormLabel>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <AutocompleteInput
-                  setValue={(value) => form.setValue("category_name", value)}
-                  value={field.value}
-                  options={categories}
-                />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
 
-        <Button type="submit" className="mt-8">
-          Submit
-        </Button>
-      </form>
-    </Form>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Paid for a gym membership for April"
+                        {...field}
+                      />
+                    </FormControl>
+
+                    <FormDescription>
+                      Optional description of the transaction.
+                    </FormDescription>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <Button type="submit" className="mt-8" disabled={isPending}>
+              {isPending && <ReloadIcon className="mr-2 animate-spin" />}
+              <span>Add transaction</span>
+            </Button>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 }
