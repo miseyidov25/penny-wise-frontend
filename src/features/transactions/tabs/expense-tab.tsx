@@ -14,7 +14,7 @@ export function ExpenseTab({ wallet }: { wallet: Wallet }) {
   const chartData = useMemo(() => {
     const result = wallet.transactions.reduce(
       (acc, transaction) => {
-        const amount = Number(transaction.amount);
+        const amount = parseFloat(transaction.amount);
 
         if (amount > 0) {
           return acc;
