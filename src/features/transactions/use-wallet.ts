@@ -45,13 +45,13 @@ export function useWallet(walletId: number) {
 
         setWallet(walletResponse.data);
         setCategories(categoriesResponse.data);
+        setIsPending(false);
       } catch (error) {
         if (error instanceof AxiosError && error.name === "CanceledError") {
           return;
         }
 
         setError("Failed to fetch transactions");
-      } finally {
         setIsPending(false);
       }
     },
