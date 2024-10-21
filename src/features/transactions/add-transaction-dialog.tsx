@@ -6,7 +6,7 @@ import { PlusIcon } from "@radix-ui/react-icons";
 import { useForm } from "react-hook-form";
 
 import { AutocompleteInput } from "@/components/ui/autocomplete-input";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -30,16 +30,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { addTransactionSchema } from "./schemas";
 import type { AddTransactionPayload } from "./types";
 
-export function AddTransactionForm({
-  onSubmit,
+export function AddTransactionDialog({
+  addTransaction,
   categories,
   isPending,
-  className,
 }: {
-  onSubmit: (values: AddTransactionPayload) => void;
+  addTransaction: (values: AddTransactionPayload) => void;
   categories: string[];
   isPending?: boolean;
-  className?: string;
 }) {
   const form = useForm<AddTransactionPayload>({
     resolver: zodResolver(addTransactionSchema),
@@ -53,7 +51,7 @@ export function AddTransactionForm({
 
   return (
     <Dialog>
-      <DialogTrigger className={className}>
+      <DialogTrigger className={buttonVariants({ variant: "outline" })}>
         <PlusIcon />
         <span className="ml-2">Add transaction</span>
       </DialogTrigger>
@@ -68,7 +66,7 @@ export function AddTransactionForm({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(addTransaction)}>
             <div className="space-y-4">
               <FormField
                 control={form.control}
