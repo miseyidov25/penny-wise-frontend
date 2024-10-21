@@ -2,6 +2,7 @@ export interface Transaction {
   id: number;
   user_id: number;
   category_id: number;
+  category_name: string;
   wallet_id: number;
   amount: string;
   description: string;
@@ -34,4 +35,10 @@ export interface AddTransactionPayload {
   amount: string;
   description: string;
   date: string;
+}
+
+export interface AddWalletPayload {
+  name: string;
+  currency: string;
+  balance: string;
 }

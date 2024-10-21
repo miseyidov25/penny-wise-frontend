@@ -55,6 +55,7 @@ export function AddTransactionForm({
     <Dialog>
       <DialogTrigger className={className}>
         <PlusIcon />
+        <span className="ml-2">Add transaction</span>
       </DialogTrigger>
 
       <DialogContent>

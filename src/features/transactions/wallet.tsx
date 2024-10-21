@@ -31,7 +31,9 @@ export function Wallet({
               </div>
 
               <div className="flex w-full flex-col items-end justify-between gap-2 font-medium">
-                <div className="rounded-sm bg-primary px-2 py-1 text-sm text-primary-foreground">
+                <div
+                  className={`rounded-sm px-2 py-1 text-sm ${transaction.amount[0] === "-" ? "bg-destructive text-destructive-foreground" : "bg-primary text-primary-foreground"}`}
+                >
                   {transaction.amount} {wallet.currency}
                 </div>
 
