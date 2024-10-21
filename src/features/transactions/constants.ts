@@ -1,3 +1,5 @@
+import { ChartConfig } from "@/components/ui/chart";
+
 export const currencies = [
   "AED",
   "AFN",
@@ -162,3 +164,24 @@ export const currencies = [
   "ZMW",
   "ZWL",
 ] as const;
+
+export const chartConfig = {
+  category: {
+    label: "Categories",
+  },
+  first: {
+    color: "hsl(var(--chart-1))",
+  },
+  second: {
+    color: "hsl(var(--chart-2))",
+  },
+  third: {
+    color: "hsl(var(--chart-3))",
+  },
+  fourth: {
+    color: "hsl(var(--chart-4))",
+  },
+  other: {
+    color: "hsl(var(--chart-5))",
+  },
+} satisfies ChartConfig;
