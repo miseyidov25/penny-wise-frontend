@@ -84,6 +84,30 @@ export const useAuth = ({
     }
   }
 
+  async function update(data: { email: string; name: string }) {
+    try {
+      await csrf();
+
+      const response = await axiosInstance.put<{ user: User }>(
+        "/api/user",
+        data,
+      );
+
+      mutate(response.data.user);
+
+      return { success: true };
+    } catch (error) {
+      if (!(error instanceof AxiosError) || error.status !== 422) {
+        return {
+          success: false,
+          error: "Something went wrong. Please try again.",
+        };
+      }
+
+      return { success: false, error: error.response?.data.message };
+    }
+  }
+
   const logout = useCallback(async () => {
     if (!error) {
       await axiosInstance.post("/logout");
@@ -105,5 +129,6 @@ export const useAuth = ({
     register,
     login,
     logout,
+    update,
   };
 };
