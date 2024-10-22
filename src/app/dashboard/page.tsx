@@ -1,10 +1,13 @@
 "use client";
 
+import { GearIcon } from "@radix-ui/react-icons";
 import { AxiosError } from "axios";
+import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { Header } from "@/components/header";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -56,7 +59,14 @@ export default function Page() {
 
   return (
     <div className="grid min-h-screen grid-rows-[auto,_1fr,_auto]">
-      <Header />
+      <Header>
+        <Link
+          href="/settings/profile"
+          className={buttonVariants({ variant: "outline", size: "icon" })}
+        >
+          <GearIcon />
+        </Link>
+      </Header>
 
       <main className="container max-w-screen-sm py-8">
         <section className="grid grid-cols-[1fr,_auto] gap-4">
