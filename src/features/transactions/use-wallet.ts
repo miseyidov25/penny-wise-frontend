@@ -13,10 +13,37 @@ import type {
 export function useWallet(walletId: number) {
   const [wallet, setWallet] = useState<Wallet | undefined>();
   const [categories, setCategories] = useState<Category[]>([]);
-  const [error, setError] = useState<string | undefined>();
+  const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
 
+  async function deleteTransaction(id: number) {
+    setError(null);
+
+    try {
+      setWallet((prevWallet) => {
+        if (!prevWallet) {
+          return prevWallet;
+        }
+
+        return {
+          ...prevWallet,
+          transactions: prevWallet.transactions.filter(
+            (transaction) => transaction.id !== id,
+          ),
+        };
+      });
+
+      await axiosInstance.delete<Wallet>(`/api/transactions/${id}`);
+
+      // TODO: Update wallet with response data
+    } catch {
+      setError("Failed to delete transaction");
+    }
+  }
+
   async function addTransaction(values: AddTransactionPayload) {
+    setError(null);
+
     setIsPending(true);
 
     try {
@@ -35,6 +62,8 @@ export function useWallet(walletId: number) {
 
   const fetchTransactions = useCallback(
     async (signal?: AbortSignal) => {
+      setError(null);
+
       setIsPending(true);
 
       try {
@@ -68,5 +97,12 @@ export function useWallet(walletId: number) {
     };
   }, [fetchTransactions]);
 
-  return { wallet, categories, error, isPending, addTransaction };
+  return {
+    wallet,
+    categories,
+    error,
+    isPending,
+    addTransaction,
+    deleteTransaction,
+  };
 }

@@ -9,6 +9,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { AddTransactionDialog } from "./add-transaction-dialog";
+import { columns } from "./columns";
+import { DataTable } from "./data-table";
 import { AllTab, ExpenseTab, IncomeTab } from "./tabs";
 import { useWallet } from "./use-wallet";
 
@@ -19,8 +21,14 @@ export function Dashboard({
   walletId: number;
   className?: string;
 }) {
-  const { wallet, error, addTransaction, isPending, categories } =
-    useWallet(walletId);
+  const {
+    wallet,
+    error,
+    addTransaction,
+    isPending,
+    categories,
+    deleteTransaction,
+  } = useWallet(walletId);
 
   useEffect(() => {
     if (error) {
@@ -66,12 +74,26 @@ export function Dashboard({
         )}
       </section>
 
-      <section className="mt-8">
+      <section className="mt-8 space-y-4">
         <AddTransactionDialog
           addTransaction={addTransaction}
           categories={categories.map((category) => category.name)}
           isPending={isPending}
         />
+
+        {isPending ? (
+          <Skeleton className="h-[26.75rem] bg-secondary"></Skeleton>
+        ) : (
+          wallet && (
+            <DataTable
+              columns={columns}
+              data={wallet.transactions.map((t) => ({
+                ...t,
+                deleteRow: () => deleteTransaction(t.id),
+              }))}
+            />
+          )
+        )}
       </section>
     </div>
   );
