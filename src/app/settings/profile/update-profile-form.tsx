@@ -62,7 +62,7 @@ export function UpdateProfileForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <Card>
-          <CardContent className="mt-6 flex flex-col gap-4">
+          <CardContent className="mt-6 space-y-4">
             <FormField
               control={form.control}
               name="name"
@@ -97,7 +97,7 @@ export function UpdateProfileForm({
           </CardContent>
 
           <CardFooter>
-            <Button className="w-full" disabled={isPending}>
+            <Button className="w-full" disabled={isPending} variant="secondary">
               {isPending && <ReloadIcon className="mr-2 animate-spin" />}
               Update
             </Button>

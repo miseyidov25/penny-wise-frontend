@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import useSWR from "swr";
 
 import { axiosInstance } from "@/lib/axios";
@@ -47,7 +47,7 @@ export const useAuth = ({
 
       return { success: true };
     } catch (error) {
-      if (!(error instanceof AxiosError) || error.status !== 422) {
+      if (!(error instanceof AxiosError)) {
         return {
           success: false,
           error: "Something went wrong. Please try again.",
@@ -73,7 +73,7 @@ export const useAuth = ({
 
       return { success: true };
     } catch (error) {
-      if (!(error instanceof AxiosError) || error.status !== 422) {
+      if (!(error instanceof AxiosError)) {
         return {
           success: false,
           error: "Something went wrong. Please try again.",
@@ -85,8 +85,10 @@ export const useAuth = ({
   }
 
   async function update(data: {
-    email: string;
-    name: string;
+    email?: string;
+    name?: string;
+    password?: string;
+    current_password?: string;
   }): Promise<{ success: true } | { success: false; error: string }> {
     try {
       await csrf();
@@ -100,7 +102,7 @@ export const useAuth = ({
 
       return { success: true };
     } catch (error) {
-      if (!(error instanceof AxiosError) || error.status !== 422) {
+      if (!(error instanceof AxiosError)) {
         return {
           success: false,
           error: "Something went wrong. Please try again.",
@@ -111,7 +113,7 @@ export const useAuth = ({
     }
   }
 
-  const logout = useCallback(async () => {
+  async function logout() {
     try {
       await axiosInstance.post("/logout");
 
@@ -126,7 +128,7 @@ export const useAuth = ({
         error: "Something went wrong. Please try again.",
       };
     }
-  }, [mutate, router]);
+  }
 
   async function deleteAccount(): Promise<
     { success: true } | { success: false; error: string }
@@ -148,10 +150,14 @@ export const useAuth = ({
   }
 
   useEffect(() => {
-    if (middleware === "auth" && error) logout();
+    if (middleware === "auth" && error) {
+      router.push("/");
+
+      return;
+    }
 
     if (middleware === "guest" && user) router.push("/dashboard");
-  }, [user, error, middleware, logout, router]);
+  }, [user, error, middleware, router]);
 
   return {
     user,
