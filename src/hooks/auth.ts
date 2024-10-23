@@ -149,6 +149,44 @@ export const useAuth = ({
     }
   }
 
+  async function forgotPassword(email: string) {
+    try {
+      await csrf();
+
+      await axiosInstance.post("/forgot-password", { email });
+
+      router.push("/login");
+
+      return { success: true };
+    } catch {
+      return {
+        success: false,
+        error: "Something went wrong. Please try again.",
+      };
+    }
+  }
+
+  async function resetPassword(values: {
+    token: string;
+    password: string;
+    password_confirmation: string;
+    email: string;
+  }) {
+    try {
+      await axiosInstance.post("/reset-password", values);
+      return { success: true };
+    } catch (error) {
+      if (!(error instanceof AxiosError)) {
+        return {
+          success: false,
+          error: "Something went wrong. Please try again.",
+        };
+      }
+
+      return { success: false, error: error.response?.data.message };
+    }
+  }
+
   useEffect(() => {
     if (middleware === "auth" && error) {
       router.push("/");
@@ -166,5 +204,7 @@ export const useAuth = ({
     logout,
     update,
     deleteAccount,
+    forgotPassword,
+    resetPassword,
   };
 };
