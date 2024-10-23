@@ -41,19 +41,19 @@ export function ExpenseTab({ wallet }: { wallet: Wallet }) {
     result.sort((a, b) => b.amount - a.amount);
 
     if (result.length > 0) {
-      result[0].fill = "var(--first-color)";
+      result[0].fill = "var(--color-first)";
     }
 
     if (result.length > 1) {
-      result[1].fill = "var(--second-color)";
+      result[1].fill = "var(--color-second)";
     }
 
     if (result.length > 2) {
-      result[2].fill = "var(--third-color)";
+      result[2].fill = "var(--color-third)";
     }
 
     if (result.length > 3) {
-      result[3].fill = "var(--fourth-color)";
+      result[3].fill = "var(--color-fourth)";
     }
 
     if (result.length > 4) {
@@ -61,7 +61,7 @@ export function ExpenseTab({ wallet }: { wallet: Wallet }) {
         .slice(4)
         .reduce((acc, { amount }) => acc + amount, 0);
 
-      result[4].fill = "var(--other-color)";
+      result[4].fill = "var(--color-other)";
     }
 
     return result.slice(0, 5);
@@ -113,7 +113,7 @@ export function ExpenseTab({ wallet }: { wallet: Wallet }) {
                       y={(viewBox.cy || 0) + 24}
                       className="fill-muted-foreground"
                     >
-                      Outcome
+                      Expense
                     </tspan>
                   </text>
                 );
