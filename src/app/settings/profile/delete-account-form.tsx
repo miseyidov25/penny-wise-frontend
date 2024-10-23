@@ -1,5 +1,6 @@
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { useTransition } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,17 +25,15 @@ export function DeleteAccountForm({
       const result = await deleteAccount();
 
       if (!result.success) {
-        alert(result.error);
+        toast.error(result.error);
       }
     });
   }
   return (
     <Card className="border-destructive bg-destructive/20">
       <CardHeader>
-        <CardTitle className="text-destructive-foreground">
-          Delete Account
-        </CardTitle>
-        <CardDescription className="text-destructive-foreground">
+        <CardTitle>Delete Account</CardTitle>
+        <CardDescription className="text-foreground">
           Once you delete your account, there is no going back. Please be
           certain.
         </CardDescription>
