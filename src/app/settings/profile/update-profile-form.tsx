@@ -8,14 +8,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -25,63 +18,60 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import type { User } from "@/hooks/auth";
 
 const formSchema = z.object({
+  name: z.string().min(1).max(255),
   email: z.string().email(),
-  password: z.string().min(8),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function LoginForm() {
+export function UpdateProfileForm({
+  user,
+  update,
+}: {
+  user: User;
+  update: (
+    values: FormValues,
+  ) => Promise<{ success: true } | { success: false; error: string }>;
+}) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      name: user.name,
+      email: user.email,
     },
   });
 
   const [isPending, startTransition] = useTransition();
 
-  function handleSubmit(data: FormValues) {
-    startTransition(() => {
-      console.log(data);
+  function onSubmit(values: FormValues) {
+    startTransition(async () => {
+      const result = await update(values);
 
-      // TODO: Handle login
-
-      form.resetField("password");
-
-      toast.error("Not implemented yet");
+      if (!result.success) {
+        toast.error(result.error);
+      } else {
+        toast.success("Profile updated successfully");
+      }
     });
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Login</CardTitle>
-
-            <CardDescription>
-              Enter your email below to login to your account.
-            </CardDescription>
-          </CardHeader>
-
-          <CardContent className="flex flex-col gap-4">
+          <CardContent className="mt-6 flex flex-col gap-4">
             <FormField
               control={form.control}
-              name="email"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Name</FormLabel>
 
                   <FormControl>
-                    <Input
-                      placeholder="example@mail.com"
-                      type="email"
-                      {...field}
-                    />
+                    <Input placeholder={user.name} {...field} />
                   </FormControl>
 
                   <FormMessage />
@@ -91,17 +81,13 @@ export function LoginForm() {
 
             <FormField
               control={form.control}
-              name="password"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Email</FormLabel>
 
                   <FormControl>
-                    <Input
-                      placeholder="••••••••••••"
-                      type="password"
-                      {...field}
-                    />
+                    <Input placeholder={user.email} type="email" {...field} />
                   </FormControl>
 
                   <FormMessage />
@@ -113,7 +99,7 @@ export function LoginForm() {
           <CardFooter>
             <Button className="w-full" disabled={isPending}>
               {isPending && <ReloadIcon className="mr-2 animate-spin" />}
-              Sign in
+              Update
             </Button>
           </CardFooter>
         </Card>
