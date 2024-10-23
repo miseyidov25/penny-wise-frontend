@@ -16,8 +16,6 @@ export default function ProfileSettings({
 }) {
   const pathname = usePathname();
 
-  console.log(pathname);
-
   return (
     <div className="grid min-h-screen grid-rows-[auto,_1fr,_auto]">
       <Header>
