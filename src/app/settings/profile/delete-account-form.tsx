@@ -29,7 +29,7 @@ export function DeleteAccountForm({
     });
   }
   return (
-    <Card className="border-destructive bg-destructive">
+    <Card className="border-destructive bg-destructive/20">
       <CardHeader>
         <CardTitle className="text-destructive-foreground">
           Delete Account
@@ -44,7 +44,7 @@ export function DeleteAccountForm({
         <Button
           disabled={isPending}
           onClick={handleDelete}
-          className="w-full bg-destructive-foreground text-destructive"
+          className="w-full"
           variant="destructive"
         >
           {isPending && <ReloadIcon className="mr-2 animate-spin" />}
