@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import useSWR from "swr";
 
 import { axiosInstance } from "@/lib/axios";
