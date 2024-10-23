@@ -5,7 +5,7 @@ import useSWR from "swr";
 
 import { axiosInstance } from "@/lib/axios";
 
-interface User {
+export interface User {
   id: number;
   name: string;
   email: string;
@@ -84,7 +84,10 @@ export const useAuth = ({
     }
   }
 
-  async function update(data: { email: string; name: string }) {
+  async function update(data: {
+    email: string;
+    name: string;
+  }): Promise<{ success: true } | { success: false; error: string }> {
     try {
       await csrf();
 
@@ -109,14 +112,40 @@ export const useAuth = ({
   }
 
   const logout = useCallback(async () => {
-    if (!error) {
+    try {
       await axiosInstance.post("/logout");
 
       mutate(undefined);
-    }
 
-    router.push("/");
-  }, [error, mutate, router]);
+      router.push("/");
+
+      return { success: true };
+    } catch {
+      return {
+        success: false,
+        error: "Something went wrong. Please try again.",
+      };
+    }
+  }, [mutate, router]);
+
+  async function deleteAccount(): Promise<
+    { success: true } | { success: false; error: string }
+  > {
+    try {
+      await axiosInstance.delete("/api/user");
+
+      mutate(undefined);
+
+      router.push("/");
+
+      return { success: true };
+    } catch {
+      return {
+        success: false,
+        error: "Something went wrong. Please try again.",
+      };
+    }
+  }
 
   useEffect(() => {
     if (middleware === "auth" && error) logout();
@@ -130,5 +159,6 @@ export const useAuth = ({
     login,
     logout,
     update,
+    deleteAccount,
   };
 };

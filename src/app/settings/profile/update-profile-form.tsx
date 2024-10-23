@@ -18,7 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/hooks/auth";
+import type { User } from "@/hooks/auth";
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
@@ -27,14 +27,20 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function UpdateProfileForm() {
-  const { user, update } = useAuth({ middleware: "auth" });
-
+export function UpdateProfileForm({
+  user,
+  update,
+}: {
+  user: User;
+  update: (
+    values: FormValues,
+  ) => Promise<{ success: true } | { success: false; error: string }>;
+}) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: user?.name,
-      email: user?.email,
+      name: user.name,
+      email: user.email,
     },
   });
 
@@ -45,7 +51,7 @@ export function UpdateProfileForm() {
       const result = await update(values);
 
       if (!result.success) {
-        toast.error(result.error.message);
+        toast.error(result.error);
       } else {
         toast.success("Profile updated successfully");
       }
@@ -65,7 +71,7 @@ export function UpdateProfileForm() {
                   <FormLabel>Name</FormLabel>
 
                   <FormControl>
-                    <Input placeholder={user?.name} {...field} />
+                    <Input placeholder={user.name} {...field} />
                   </FormControl>
 
                   <FormMessage />
@@ -81,7 +87,7 @@ export function UpdateProfileForm() {
                   <FormLabel>Email</FormLabel>
 
                   <FormControl>
-                    <Input placeholder={user?.email} type="email" {...field} />
+                    <Input placeholder={user.email} type="email" {...field} />
                   </FormControl>
 
                   <FormMessage />
