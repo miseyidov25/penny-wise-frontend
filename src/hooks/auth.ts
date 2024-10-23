@@ -85,8 +85,10 @@ export const useAuth = ({
   }
 
   async function update(data: {
-    email: string;
-    name: string;
+    email?: string;
+    name?: string;
+    password?: string;
+    current_password?: string;
   }): Promise<{ success: true } | { success: false; error: string }> {
     try {
       await csrf();
@@ -100,7 +102,7 @@ export const useAuth = ({
 
       return { success: true };
     } catch (error) {
-      if (!(error instanceof AxiosError) || error.status !== 422) {
+      if (!(error instanceof AxiosError)) {
         return {
           success: false,
           error: "Something went wrong. Please try again.",
