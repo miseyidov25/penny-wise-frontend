@@ -82,7 +82,7 @@ export function Dashboard({
         />
 
         {isPending ? (
-          <Skeleton className="h-[26.75rem] bg-secondary"></Skeleton>
+          <Skeleton className="h-[26.75rem] bg-secondary" />
         ) : (
           wallet && (
             <DataTable

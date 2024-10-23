@@ -18,7 +18,7 @@ export default function ProfileSettings({
 
   return (
     <div className="grid min-h-screen grid-rows-[auto,_1fr,_auto]">
-      <Header>
+      <Header isAuthorized>
         <Link
           href="/settings/profile"
           className={buttonVariants({ variant: "outline", size: "icon" })}

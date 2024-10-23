@@ -20,6 +20,7 @@ import {
 import { AddWalletDialog } from "@/features/transactions/add-wallet-dialog";
 import { Dashboard } from "@/features/transactions/dashboard";
 import type { Wallet } from "@/features/transactions/types";
+import { UpdateWalletDialog } from "@/features/transactions/update-wallet-dialog";
 import { useAuth } from "@/hooks/auth";
 import { axiosInstance } from "@/lib/axios";
 
@@ -59,7 +60,7 @@ export default function Page() {
 
   return (
     <div className="grid min-h-screen grid-rows-[auto,_1fr,_auto]">
-      <Header>
+      <Header isAuthorized>
         <Link
           href="/settings/profile"
           className={buttonVariants({ variant: "outline", size: "icon" })}
@@ -69,7 +70,7 @@ export default function Page() {
       </Header>
 
       <main className="container max-w-screen-sm py-8">
-        <section className="grid grid-cols-[1fr,_auto] gap-4">
+        <section className="grid grid-cols-[1fr,_auto,_auto] gap-4">
           <Select onValueChange={(walletId) => setWalletId(+walletId)}>
             <SelectTrigger disabled={isPending}>
               <SelectValue placeholder="Select a wallet" />
@@ -92,6 +93,14 @@ export default function Page() {
               </SelectGroup>
             </SelectContent>
           </Select>
+
+          {walletId && (
+            <UpdateWalletDialog
+              wallets={wallets}
+              walletId={walletId}
+              setWallets={setWallets}
+            />
+          )}
 
           <AddWalletDialog setWallets={setWallets} />
         </section>

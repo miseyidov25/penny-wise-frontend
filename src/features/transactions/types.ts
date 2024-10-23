@@ -42,3 +42,8 @@ export interface AddWalletPayload {
   currency: string;
   balance: string;
 }
+
+export interface UpdateWalletPayload {
+  name: string;
+  currency: string;
+}
