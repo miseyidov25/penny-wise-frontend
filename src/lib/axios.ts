@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
@@ -7,5 +8,12 @@ export const axiosInstance = axios.create({
     Accept: "application/json",
   },
   withCredentials: true,
-  withXSRFToken: true,
+});
+
+axiosInstance.interceptors.request.use((config) => {
+  const xsrfToken = Cookies.get("XSRF-TOKEN");
+  if (xsrfToken) {
+    config.headers["X-XSRF-TOKEN"] = xsrfToken;
+  }
+  return config;
 });
