@@ -1,14 +1,9 @@
 export interface Transaction {
   id: number;
-  user_id: number;
-  category_id: number;
   category_name: string;
-  wallet_id: number;
   amount: string;
   description: string;
   date: string;
-  created_at: string;
-  updated_at: string;
   currency: string;
 }
 

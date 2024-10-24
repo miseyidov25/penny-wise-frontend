@@ -1,8 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Pencil1Icon, ReloadIcon, TrashIcon } from "@radix-ui/react-icons";
-import { useEffect, useState, useTransition } from "react";
+import {
+  DotsHorizontalIcon,
+  ReloadIcon,
+  TrashIcon,
+} from "@radix-ui/react-icons";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -33,69 +37,45 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { axiosInstance } from "@/lib/axios";
 
 import { currencies } from "./constants";
 import { updateWalletSchema } from "./schemas";
-import type { UpdateWalletPayload, Wallet } from "./types";
+import type { UpdateWalletPayload } from "./types";
 
 export function UpdateWalletDialog({
-  setWallets,
-  wallets,
-  walletId,
+  wallet,
+  updateWallet,
+  deleteWallet,
 }: {
-  setWallets: (wallets: Wallet[]) => void;
-  wallets: Wallet[];
-  walletId: number;
+  wallet: { name: string; currency: string };
+  updateWallet(
+    payload: UpdateWalletPayload,
+  ): Promise<{ error: string } | undefined>;
+  deleteWallet(): Promise<{ error: string } | undefined>;
 }) {
-  const [defaultValues, setDefaultValues] = useState<UpdateWalletPayload>({
-    name: "",
-    currency: "",
-  });
-
-  useEffect(() => {
-    const wallet = wallets.find((wallet) => wallet.id === walletId);
-
-    setDefaultValues(wallet || { name: "", currency: "" });
-  }, [walletId, wallets]);
-
   const form = useForm<UpdateWalletPayload>({
     resolver: zodResolver(updateWalletSchema),
-    defaultValues,
+    defaultValues: wallet,
   });
 
   const [isPending, startTransition] = useTransition();
-  const [isDeletePending, startDeleteTransition] = useTransition();
 
-  function onSubmit(values: UpdateWalletPayload) {
+  function onSubmit(payload: UpdateWalletPayload) {
     startTransition(async () => {
-      try {
-        const response = await axiosInstance.put<{ wallets: Wallet[] }>(
-          `/api/wallets/${walletId}`,
-          values,
-        );
+      const response = await updateWallet(payload);
 
-        setWallets(response.data.wallets);
-
-        toast.success("Wallet updated successfully");
-      } catch {
-        toast.error("Failed to update wallet");
+      if (response?.error) {
+        toast.error(response.error);
       }
     });
   }
 
   function onDelete() {
-    startDeleteTransition(async () => {
-      try {
-        const response = await axiosInstance.delete<{ wallets: Wallet[] }>(
-          `/api/wallets/${walletId}`,
-        );
+    startTransition(async () => {
+      const response = await deleteWallet();
 
-        setWallets(response.data.wallets);
-
-        toast.success("Wallet deleted successfully");
-      } catch {
-        toast.error("Failed to delete wallet");
+      if (response?.error) {
+        toast.error(response.error);
       }
     });
   }
@@ -103,15 +83,14 @@ export function UpdateWalletDialog({
   return (
     <Dialog>
       <DialogTrigger
-        className={buttonVariants({ variant: "outline", size: "icon" })}
-        disabled={!walletId}
+        className={buttonVariants({ variant: "ghost", size: "icon" })}
       >
-        <Pencil1Icon />
+        <DotsHorizontalIcon />
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Update {defaultValues.name}</DialogTitle>
+          <DialogTitle>Update {wallet.name}</DialogTitle>
 
           <DialogDescription>
             Enter the new details for the wallet.
@@ -177,7 +156,7 @@ export function UpdateWalletDialog({
               />
             </div>
 
-            <div className="mt-8 flex gap-4">
+            <div className="mt-8 grid grid-cols-[1fr,_auto] gap-4">
               <Button type="submit" disabled={isPending}>
                 {isPending && <ReloadIcon className="mr-2 animate-spin" />}
                 Update
@@ -185,12 +164,12 @@ export function UpdateWalletDialog({
 
               <Button
                 type="button"
-                disabled={isDeletePending}
-                variant="destructive"
+                disabled={isPending}
+                variant="ghost"
                 onClick={onDelete}
                 size="icon"
               >
-                {isDeletePending ? (
+                {isPending ? (
                   <ReloadIcon className="animate-spin" />
                 ) : (
                   <TrashIcon />

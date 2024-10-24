@@ -1,12 +1,12 @@
 "use client";
 
-import { GearIcon } from "@radix-ui/react-icons";
-import { AxiosError } from "axios";
+import { GearIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect } from "react";
 import { toast } from "sonner";
 
 import { Header } from "@/components/header";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Select,
@@ -17,46 +17,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { AddTransactionDialog } from "@/features/transactions/add-transaction-dialog";
 import { AddWalletDialog } from "@/features/transactions/add-wallet-dialog";
-import { Dashboard } from "@/features/transactions/dashboard";
-import type { Wallet } from "@/features/transactions/types";
-import { UpdateWalletDialog } from "@/features/transactions/update-wallet-dialog";
+import { columns } from "@/features/transactions/columns";
+import { DataTable } from "@/features/transactions/data-table";
+import { TransactionTabs } from "@/features/transactions/transaction-tabs";
+import { useWallets } from "@/features/transactions/use-wallets";
 import { useAuth } from "@/hooks/auth";
-import { axiosInstance } from "@/lib/axios";
 
 export default function Page() {
   useAuth({ middleware: "auth" });
 
-  const [wallets, setWallets] = useState<Wallet[]>([]);
-  const [isPending, startTransition] = useTransition();
-  const [walletId, setWalletId] = useState<number | null>(null);
+  const {
+    addTransaction,
+    addWallet,
+    categories,
+    deleteTransaction,
+    deleteWallet,
+    error,
+    isPending,
+    selectedWallet,
+    selectWallet,
+    updateWallet,
+    wallets,
+  } = useWallets();
 
   useEffect(() => {
-    const controller = new AbortController();
-
-    startTransition(async () => {
-      try {
-        const response = await axiosInstance.get<{ wallets: Wallet[] }>(
-          "/api/wallets",
-          {
-            signal: controller.signal,
-          },
-        );
-
-        setWallets(response.data.wallets);
-      } catch (error) {
-        if (error instanceof AxiosError && error.name === "CanceledError") {
-          return;
-        }
-
-        toast.error("Failed to fetch wallets");
-      }
-    });
-
-    return () => {
-      controller.abort();
-    };
-  }, []);
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   return (
     <div className="grid min-h-screen grid-rows-[auto,_1fr,_auto]">
@@ -70,8 +60,8 @@ export default function Page() {
       </Header>
 
       <main className="container max-w-screen-sm py-8">
-        <section className="grid grid-cols-[1fr,_auto,_auto] gap-4">
-          <Select onValueChange={(walletId) => setWalletId(+walletId)}>
+        <section className="grid grid-cols-[1fr,_auto] gap-4">
+          <Select onValueChange={(walletId) => selectWallet(walletId)}>
             <SelectTrigger disabled={isPending}>
               <SelectValue placeholder="Select a wallet" />
             </SelectTrigger>
@@ -94,18 +84,44 @@ export default function Page() {
             </SelectContent>
           </Select>
 
-          {walletId && (
-            <UpdateWalletDialog
-              wallets={wallets}
-              walletId={walletId}
-              setWallets={setWallets}
-            />
-          )}
-
-          <AddWalletDialog setWallets={setWallets} />
+          <AddWalletDialog addWallet={addWallet} />
         </section>
 
-        {walletId && <Dashboard walletId={walletId} className="mt-8" />}
+        {selectedWallet && (
+          <section className="mt-8 space-y-4">
+            <TransactionTabs
+              wallet={selectedWallet}
+              updateWallet={updateWallet}
+              deleteWallet={deleteWallet}
+            />
+
+            <AddTransactionDialog
+              addTransaction={addTransaction}
+              categories={categories}
+            />
+
+            {selectedWallet.transactions.length === 0 ? (
+              <Alert variant="default">
+                <MagnifyingGlassIcon />
+
+                <AlertTitle>No transactions</AlertTitle>
+
+                <AlertDescription>
+                  No transactions found. Click the button below to add a new
+                  transaction.
+                </AlertDescription>
+              </Alert>
+            ) : (
+              <DataTable
+                columns={columns}
+                data={selectedWallet.transactions.map((transaction) => ({
+                  ...transaction,
+                  deleteRow: () => deleteTransaction(transaction.id),
+                }))}
+              />
+            )}
+          </section>
+        )}
       </main>
     </div>
   );

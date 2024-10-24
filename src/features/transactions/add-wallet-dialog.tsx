@@ -33,16 +33,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { axiosInstance } from "@/lib/axios";
 
 import { currencies } from "./constants";
 import { addWalletSchema } from "./schemas";
-import type { AddWalletPayload, Wallet } from "./types";
+import type { AddWalletPayload } from "./types";
 
 export function AddWalletDialog({
-  setWallets,
+  addWallet,
 }: {
-  setWallets: (wallets: Wallet[]) => void;
+  addWallet: (
+    payload: AddWalletPayload,
+  ) => Promise<{ error: string } | undefined>;
 }) {
   const form = useForm<AddWalletPayload>({
     resolver: zodResolver(addWalletSchema),
@@ -55,20 +56,14 @@ export function AddWalletDialog({
 
   const [isPending, startTransition] = useTransition();
 
-  function onSubmit(values: AddWalletPayload) {
+  function onSubmit(payload: AddWalletPayload) {
     startTransition(async () => {
-      try {
-        const response = await axiosInstance.post<{ wallets: Wallet[] }>(
-          "/api/wallets",
-          values,
-        );
+      const result = await addWallet(payload);
 
-        setWallets(response.data.wallets);
-
+      if (result?.error) {
+        toast.error(result.error);
+      } else {
         form.reset();
-        toast.success("Wallet created successfully");
-      } catch {
-        toast.error("Failed to create wallet");
       }
     });
   }

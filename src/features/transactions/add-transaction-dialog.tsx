@@ -3,7 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { PlusIcon } from "@radix-ui/react-icons";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import { AutocompleteInput } from "@/components/ui/autocomplete-input";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -33,11 +35,12 @@ import type { AddTransactionPayload } from "./types";
 export function AddTransactionDialog({
   addTransaction,
   categories,
-  isPending,
 }: {
-  addTransaction: (values: AddTransactionPayload) => void;
+  addTransaction: (
+    payload: AddTransactionPayload,
+  ) => Promise<{ error: string } | undefined>;
+
   categories: string[];
-  isPending?: boolean;
 }) {
   const form = useForm<AddTransactionPayload>({
     resolver: zodResolver(addTransactionSchema),
@@ -49,9 +52,23 @@ export function AddTransactionDialog({
     },
   });
 
+  const [isPending, startTransaction] = useTransition();
+
+  function onSubmit(values: AddTransactionPayload) {
+    startTransaction(async () => {
+      const result = await addTransaction(values);
+
+      if (result?.error) {
+        toast.error(result.error);
+      } else {
+        form.reset();
+      }
+    });
+  }
+
   return (
     <Dialog>
-      <DialogTrigger className={buttonVariants()}>
+      <DialogTrigger className={buttonVariants({ variant: "secondary" })}>
         <PlusIcon />
         <span className="ml-2">Add transaction</span>
       </DialogTrigger>
@@ -66,7 +83,7 @@ export function AddTransactionDialog({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(addTransaction)}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="space-y-4">
               <FormField
                 control={form.control}
