@@ -109,7 +109,13 @@ export const useAuth = ({
         };
       }
 
-      return { success: false, error: error.response?.data.message };
+      return {
+        success: false,
+        error:
+          error.response?.data.message ||
+          error.response?.data.email[0] ||
+          error.response?.data.name[0],
+      };
     }
   }
 

@@ -21,3 +21,8 @@ export const addWalletSchema = z.object({
       message: "Balance must be a number with up to two decimal places",
     }),
 });
+
+export const updateWalletSchema = z.object({
+  name: z.string().min(1, "Name is required").max(255),
+  currency: z.string().length(3, "Currency must be a 3-letter code"),
+});

@@ -1,7 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon, ReloadIcon } from "@radix-ui/react-icons";
+import {
+  DotsHorizontalIcon,
+  ReloadIcon,
+  TrashIcon,
+} from "@radix-ui/react-icons";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -35,35 +39,43 @@ import {
 } from "@/components/ui/select";
 
 import { currencies } from "./constants";
-import { addWalletSchema } from "./schemas";
-import type { AddWalletPayload } from "./types";
+import { updateWalletSchema } from "./schemas";
+import type { UpdateWalletPayload } from "./types";
 
-export function AddWalletDialog({
-  addWallet,
+export function UpdateWalletDialog({
+  wallet,
+  updateWallet,
+  deleteWallet,
 }: {
-  addWallet: (
-    payload: AddWalletPayload,
-  ) => Promise<{ error: string } | undefined>;
+  wallet: { name: string; currency: string };
+  updateWallet(
+    payload: UpdateWalletPayload,
+  ): Promise<{ error: string } | undefined>;
+  deleteWallet(): Promise<{ error: string } | undefined>;
 }) {
-  const form = useForm<AddWalletPayload>({
-    resolver: zodResolver(addWalletSchema),
-    defaultValues: {
-      name: "",
-      currency: "EUR",
-      balance: "0.00",
-    },
+  const form = useForm<UpdateWalletPayload>({
+    resolver: zodResolver(updateWalletSchema),
+    defaultValues: wallet,
   });
 
   const [isPending, startTransition] = useTransition();
 
-  function onSubmit(payload: AddWalletPayload) {
+  function onSubmit(payload: UpdateWalletPayload) {
     startTransition(async () => {
-      const result = await addWallet(payload);
+      const response = await updateWallet(payload);
 
-      if (result?.error) {
-        toast.error(result.error);
-      } else {
-        form.reset();
+      if (response?.error) {
+        toast.error(response.error);
+      }
+    });
+  }
+
+  function onDelete() {
+    startTransition(async () => {
+      const response = await deleteWallet();
+
+      if (response?.error) {
+        toast.error(response.error);
       }
     });
   }
@@ -71,18 +83,17 @@ export function AddWalletDialog({
   return (
     <Dialog>
       <DialogTrigger
-        className={buttonVariants({ variant: "outline", size: "icon" })}
+        className={buttonVariants({ variant: "ghost", size: "icon" })}
       >
-        <PlusIcon />
+        <DotsHorizontalIcon />
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create a new wallet</DialogTitle>
+          <DialogTitle>Update {wallet.name}</DialogTitle>
 
           <DialogDescription>
-            You can create a new wallet by entering the name, the currency and
-            the initial balance.
+            Enter the new details for the wallet.
           </DialogDescription>
         </DialogHeader>
 
@@ -102,26 +113,6 @@ export function AddWalletDialog({
 
                     <FormDescription>
                       The name to identify the wallet.
-                    </FormDescription>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="balance"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Balance</FormLabel>
-
-                    <FormControl>
-                      <Input placeholder="0.00" {...field} />
-                    </FormControl>
-
-                    <FormDescription>
-                      The initial balance for the wallet.
                     </FormDescription>
 
                     <FormMessage />
@@ -165,10 +156,26 @@ export function AddWalletDialog({
               />
             </div>
 
-            <Button type="submit" className="mt-8" disabled={isPending}>
-              {isPending && <ReloadIcon className="mr-2 animate-spin" />}
-              Create wallet
-            </Button>
+            <div className="mt-8 grid grid-cols-[1fr,_auto] gap-4">
+              <Button type="submit" disabled={isPending}>
+                {isPending && <ReloadIcon className="mr-2 animate-spin" />}
+                Update
+              </Button>
+
+              <Button
+                type="button"
+                disabled={isPending}
+                variant="ghost"
+                onClick={onDelete}
+                size="icon"
+              >
+                {isPending ? (
+                  <ReloadIcon className="animate-spin" />
+                ) : (
+                  <TrashIcon />
+                )}
+              </Button>
+            </div>
           </form>
         </Form>
       </DialogContent>
