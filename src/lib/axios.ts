@@ -7,18 +7,11 @@ export const axiosInstance = axios.create({
     Accept: "application/json",
   },
   withCredentials: true,
+  withXSRFToken: true,
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  const xsrfToken = document.cookie
-    .split("; ")
-    .find((row) => row.startsWith("XSRF-TOKEN="))
-    ?.split("=")[1];
+  console.log("All cookies:", document.cookie);
 
-  console.log("xsrfToken", xsrfToken);
-
-  if (xsrfToken) {
-    config.headers["X-XSRF-TOKEN"] = xsrfToken;
-  }
   return config;
 });
