@@ -12,6 +12,7 @@ export const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use((config) => {
   const xsrfToken = Cookies.get("XSRF-TOKEN");
+  console.log("xsrfToken", xsrfToken);
   if (xsrfToken) {
     config.headers["X-XSRF-TOKEN"] = xsrfToken;
   }
