@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { AddTransactionDialog } from "@/features/transactions/add-transaction-dialog";
 import { AddWalletDialog } from "@/features/transactions/add-wallet-dialog";
 import { columns } from "@/features/transactions/columns";
@@ -36,6 +37,7 @@ export default function Page() {
     deleteWallet,
     error,
     isPending,
+    isWalletPending,
     selectedWallet,
     selectWallet,
     updateWallet,
@@ -87,7 +89,9 @@ export default function Page() {
           <AddWalletDialog addWallet={addWallet} />
         </section>
 
-        {selectedWallet && (
+        {isWalletPending && <Skeleton className="mt-8 h-96 bg-card" />}
+
+        {!isWalletPending && selectedWallet && (
           <section className="mt-8 space-y-4">
             <TransactionTabs
               wallet={selectedWallet}

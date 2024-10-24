@@ -21,6 +21,8 @@ export function useWallets() {
 
   const [categories, setCategories] = useState<string[]>([]);
 
+  const [isWalletPending, setIsWalletPending] = useState(false);
+
   useEffect(() => {
     const controller = new AbortController();
     const { signal } = controller;
@@ -51,13 +53,18 @@ export function useWallets() {
   }, []);
 
   async function selectWallet(walletId: string) {
+    setIsWalletPending(true);
+
     try {
       const response = await axiosInstance.get<Wallet>(
         `/api/wallets/${walletId}`,
       );
 
       setSelectedWallet(response.data);
+      setIsWalletPending(false);
     } catch {
+      setIsWalletPending(false);
+
       return { error: "Failed to fetch wallet." };
     }
   }
@@ -226,6 +233,7 @@ export function useWallets() {
     deleteWallet,
     error,
     isPending,
+    isWalletPending,
     selectedWallet,
     selectWallet,
     updateWallet,
