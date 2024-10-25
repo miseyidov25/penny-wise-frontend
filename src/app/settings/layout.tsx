@@ -1,12 +1,17 @@
 "use client";
 
 import { GearIcon } from "@radix-ui/react-icons";
-import { MixerHorizontalIcon, PersonIcon } from "@radix-ui/react-icons";
+import {
+  LockOpen1Icon,
+  MixerHorizontalIcon,
+  PersonIcon,
+} from "@radix-ui/react-icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { Header } from "@/components/header";
 import { buttonVariants } from "@/components/ui/button";
+import { useAuth } from "@/hooks/auth";
 import { cn } from "@/lib/utils";
 
 export default function ProfileSettings({
@@ -14,6 +19,8 @@ export default function ProfileSettings({
 }: {
   children: React.ReactNode;
 }) {
+  const { user } = useAuth({ middleware: "auth" });
+
   const pathname = usePathname();
 
   return (
@@ -33,7 +40,7 @@ export default function ProfileSettings({
           <p className="text-muted-foreground">Manage your account settings.</p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-[auto,_1fr]">
+        <div className="grid gap-4 sm:grid-cols-[9rem,_1fr]">
           <aside className="flex gap-2 sm:flex-col">
             <Link
               href="/settings/profile"
@@ -43,7 +50,7 @@ export default function ProfileSettings({
                     ? "secondary"
                     : "ghost",
                 }),
-                "justify-start pr-12",
+                "justify-start",
               )}
             >
               <PersonIcon />
@@ -58,12 +65,29 @@ export default function ProfileSettings({
                     ? "secondary"
                     : "ghost",
                 }),
-                "justify-start pr-12",
+                "justify-start",
               )}
             >
               <MixerHorizontalIcon />
               <span className="ml-2">Advanced</span>
             </Link>
+
+            {user?.role === "admin" && (
+              <Link
+                href="/settings/admin"
+                className={cn(
+                  buttonVariants({
+                    variant: pathname.includes("/settings/admin")
+                      ? "secondary"
+                      : "ghost",
+                  }),
+                  "justify-start",
+                )}
+              >
+                <LockOpen1Icon />
+                <span className="ml-2">Admin</span>
+              </Link>
+            )}
           </aside>
 
           <main>{children}</main>
