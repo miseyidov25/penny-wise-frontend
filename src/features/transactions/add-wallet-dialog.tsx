@@ -64,6 +64,7 @@ export function AddWalletDialog({
         toast.error(result.error);
       } else {
         form.reset();
+        toast.success("Wallet created successfully");
       }
     });
   }
