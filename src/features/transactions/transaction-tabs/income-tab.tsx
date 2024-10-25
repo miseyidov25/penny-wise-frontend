@@ -40,8 +40,6 @@ export function IncomeTab({ wallet }: { wallet: Wallet }) {
 
     result.sort((a, b) => b.amount - a.amount);
 
-    console.log(result);
-
     if (result.length > 0) {
       result[0].fill = "var(--color-first)";
     }

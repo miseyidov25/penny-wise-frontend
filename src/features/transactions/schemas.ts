@@ -7,7 +7,14 @@ export const addTransactionSchema = z.object({
     .refine((val) => /^-?\d+(\.\d{1,2})?$/.test(val.toString()), {
       message: "Amount must be a number with up to two decimal places",
     })
-    .refine((val) => Number(val) !== 0, "Amount must not be zero"),
+    .refine(
+      (val) => Number(val) < 100000000.0,
+      "Amount must not exceed 100000000.00",
+    )
+    .refine(
+      (val) => Number(val) > -100000000.0,
+      "Amount must exceed -100000000.00",
+    ),
   description: z.string().max(255).optional(),
   date: z.string().transform((value) => new Date(value).toISOString()),
 });
