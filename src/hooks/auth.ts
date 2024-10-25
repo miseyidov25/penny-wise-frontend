@@ -9,6 +9,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  role: string;
 }
 
 export async function fetchUser() {

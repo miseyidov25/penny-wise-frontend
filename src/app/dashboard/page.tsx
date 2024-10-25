@@ -116,13 +116,15 @@ export default function Page() {
                 </AlertDescription>
               </Alert>
             ) : (
-              <DataTable
-                columns={columns}
-                data={selectedWallet.transactions.map((transaction) => ({
-                  ...transaction,
-                  deleteRow: () => deleteTransaction(transaction.id),
-                }))}
-              />
+              <div className="max-w-[calc(100vw-2rem)] overflow-x-auto whitespace-nowrap">
+                <DataTable
+                  columns={columns}
+                  data={selectedWallet.transactions.map((transaction) => ({
+                    ...transaction,
+                    deleteRow: () => deleteTransaction(transaction.id),
+                  }))}
+                />
+              </div>
             )}
           </section>
         )}
