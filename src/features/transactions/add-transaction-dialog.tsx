@@ -68,7 +68,7 @@ export function AddTransactionDialog({
 
   return (
     <Dialog>
-      <DialogTrigger className={buttonVariants({ variant: "secondary" })}>
+      <DialogTrigger className={buttonVariants()}>
         <PlusIcon />
         <span className="ml-2">Add transaction</span>
       </DialogTrigger>
