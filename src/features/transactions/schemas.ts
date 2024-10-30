@@ -14,7 +14,8 @@ export const addTransactionSchema = z.object({
     .refine(
       (val) => Number(val) > -100000000.0,
       "Amount must exceed -100000000.00",
-    ),
+    )
+    .refine((val) => Number(val) !== 0, "Amount must not be zero"),
   description: z.string().max(255).optional(),
   date: z.string().transform((value) => new Date(value).toISOString()),
 });
