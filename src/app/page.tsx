@@ -14,12 +14,18 @@ export default function Home() {
   return (
     <div className="grid min-h-screen grid-rows-[auto,_1fr,_auto]">
       <Header>
-        <Link
-          href="/login"
-          className={buttonVariants({ variant: "secondary" })}
-        >
-          Login
-        </Link>
+        <nav className="space-x-2">
+          <Link
+            href="/login"
+            className={buttonVariants({ variant: "secondary" })}
+          >
+            Login
+          </Link>
+
+          <Link href="/register" className={buttonVariants()}>
+            Sign up
+          </Link>
+        </nav>
       </Header>
 
       <main className="flex-grow py-8">
