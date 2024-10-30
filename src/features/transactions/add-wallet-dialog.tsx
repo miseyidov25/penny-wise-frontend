@@ -6,7 +6,6 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { buttonVariants } from "@/components/ui/button";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -71,10 +70,8 @@ export function AddWalletDialog({
 
   return (
     <Dialog>
-      <DialogTrigger
-        className={buttonVariants({ variant: "outline", size: "icon" })}
-      >
-        <PlusIcon />
+      <DialogTrigger className="grid h-64 w-96 place-content-center rounded-xl bg-card text-card-foreground/40 shadow-sm hover:bg-card/80">
+        <PlusIcon className="size-24" />
       </DialogTrigger>
 
       <DialogContent>
