@@ -1,11 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  DotsHorizontalIcon,
-  ReloadIcon,
-  TrashIcon,
-} from "@radix-ui/react-icons";
+import { Pencil2Icon, ReloadIcon } from "@radix-ui/react-icons";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -45,13 +41,11 @@ import type { UpdateWalletPayload } from "./types";
 export function UpdateWalletDialog({
   wallet,
   updateWallet,
-  deleteWallet,
 }: {
   wallet: { name: string; currency: string };
   updateWallet(
     payload: UpdateWalletPayload,
   ): Promise<{ error: string } | undefined>;
-  deleteWallet(): Promise<{ error: string } | undefined>;
 }) {
   const form = useForm<UpdateWalletPayload>({
     resolver: zodResolver(updateWalletSchema),
@@ -70,22 +64,12 @@ export function UpdateWalletDialog({
     });
   }
 
-  function onDelete() {
-    startTransition(async () => {
-      const response = await deleteWallet();
-
-      if (response?.error) {
-        toast.error(response.error);
-      }
-    });
-  }
-
   return (
     <Dialog>
       <DialogTrigger
-        className={buttonVariants({ variant: "ghost", size: "icon" })}
+        className={buttonVariants({ size: "icon", variant: "outline" })}
       >
-        <DotsHorizontalIcon />
+        <Pencil2Icon />
       </DialogTrigger>
 
       <DialogContent>
@@ -156,26 +140,10 @@ export function UpdateWalletDialog({
               />
             </div>
 
-            <div className="mt-8 grid grid-cols-[1fr,_auto] gap-4">
-              <Button type="submit" disabled={isPending}>
-                {isPending && <ReloadIcon className="mr-2 animate-spin" />}
-                Update
-              </Button>
-
-              <Button
-                type="button"
-                disabled={isPending}
-                variant="ghost"
-                onClick={onDelete}
-                size="icon"
-              >
-                {isPending ? (
-                  <ReloadIcon className="animate-spin" />
-                ) : (
-                  <TrashIcon />
-                )}
-              </Button>
-            </div>
+            <Button type="submit" disabled={isPending} className="mt-8">
+              {isPending && <ReloadIcon className="mr-2 animate-spin" />}
+              Update
+            </Button>
           </form>
         </Form>
       </DialogContent>

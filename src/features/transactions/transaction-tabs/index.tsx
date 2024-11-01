@@ -1,22 +1,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import type { UpdateWalletPayload, Wallet } from "../types";
-import { UpdateWalletDialog } from "../update-wallet-dialog";
+import type { Wallet } from "../types";
 import { AllTab } from "./all-tab";
 import { ExpenseTab } from "./expense-tab";
 import { IncomeTab } from "./income-tab";
 
-export function TransactionTabs({
-  wallet,
-  updateWallet,
-  deleteWallet,
-}: {
-  wallet: Wallet;
-  updateWallet(
-    payload: UpdateWalletPayload,
-  ): Promise<{ error: string } | undefined>;
-  deleteWallet(): Promise<{ error: string } | undefined>;
-}) {
+export function TransactionTabs({ wallet }: { wallet: Wallet }) {
   return (
     <Tabs defaultValue="all">
       <div className="flex justify-between">
@@ -25,12 +14,6 @@ export function TransactionTabs({
           <TabsTrigger value="income">Income</TabsTrigger>
           <TabsTrigger value="expense">Expense</TabsTrigger>
         </TabsList>
-
-        <UpdateWalletDialog
-          wallet={wallet}
-          updateWallet={updateWallet}
-          deleteWallet={deleteWallet}
-        />
       </div>
 
       <TabsContent value="all">
