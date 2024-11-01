@@ -12,7 +12,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AddTransactionDialog } from "@/features/transactions/add-transaction-dialog";
 import { columns } from "@/features/transactions/columns";
 import { DataTable } from "@/features/transactions/data-table";
+import { DeleteWalletDialog } from "@/features/transactions/delete-wallet-dialog";
 import { TransactionTabs } from "@/features/transactions/transaction-tabs";
+import { UpdateWalletDialog } from "@/features/transactions/update-wallet-dialog";
 import { useWallet } from "@/features/transactions/use-wallet";
 import { useAuth } from "@/hooks/auth";
 
@@ -23,8 +25,10 @@ export default function Wallet({ params }: { params: { walletId: string } }) {
     addTransaction,
     categories,
     deleteTransaction,
+    deleteWallet,
     error,
     isPending,
+    updateWallet,
     wallet,
   } = useWallet(params.walletId);
 
@@ -46,6 +50,19 @@ export default function Wallet({ params }: { params: { walletId: string } }) {
       </Header>
 
       <main className="container max-w-screen-sm py-8">
+        <div className="mb-8 flex items-center justify-between gap-4">
+          <h1 className="text-4xl font-extrabold tracking-tight">
+            {wallet?.name}
+          </h1>
+
+          {wallet && (
+            <div className="flex gap-2">
+              <UpdateWalletDialog wallet={wallet} updateWallet={updateWallet} />
+              <DeleteWalletDialog wallet={wallet} deleteWallet={deleteWallet} />
+            </div>
+          )}
+        </div>
+
         {isPending && <Skeleton className="h-96 bg-card" />}
 
         {!isPending && wallet && (

@@ -55,7 +55,11 @@ export default function Wallets() {
                       href={`/dashboard/${wallet.id}`}
                       className="flex h-64 w-96 flex-col gap-2 rounded-xl bg-card p-8 text-card-foreground shadow-sm hover:bg-card/80"
                     >
-                      <p className="text-xl font-medium">{wallet.name} </p>
+                      <div className="flex justify-between gap-4">
+                        <p className="truncate text-clip text-xl font-medium">
+                          {wallet.name}
+                        </p>
+                      </div>
 
                       <p>
                         {new Intl.NumberFormat("de-DE", {

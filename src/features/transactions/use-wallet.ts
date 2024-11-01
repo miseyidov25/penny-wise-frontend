@@ -3,7 +3,12 @@ import { useEffect, useState, useTransition } from "react";
 
 import { axiosInstance } from "@/lib/axios";
 
-import type { AddTransactionPayload, Category, Wallet } from "./types";
+import type {
+  AddTransactionPayload,
+  Category,
+  UpdateWalletPayload,
+  Wallet,
+} from "./types";
 
 export function useWallet(walletId: string) {
   const [wallet, setWallet] = useState<Wallet | null>();
@@ -95,12 +100,41 @@ export function useWallet(walletId: string) {
     }
   }
 
+  async function updateWallet(payload: UpdateWalletPayload) {
+    if (!wallet) {
+      return { error: "Wallet not found." };
+    }
+
+    try {
+      const response = await axiosInstance.put<{ wallet: Wallet }>(
+        `/api/wallets/${wallet.id}`,
+        payload,
+      );
+
+      setWallet(response.data.wallet);
+    } catch {
+      return { error: "Failed to update wallet." };
+    }
+  }
+
+  async function deleteWallet() {
+    try {
+      await axiosInstance.delete<{ wallets: Wallet[] }>(
+        `/api/wallets/${wallet?.id}`,
+      );
+    } catch {
+      return { error: "Failed to delete wallet." };
+    }
+  }
+
   return {
     addTransaction,
     categories,
     deleteTransaction,
+    deleteWallet,
     error,
     isPending,
+    updateWallet,
     wallet,
   };
 }
