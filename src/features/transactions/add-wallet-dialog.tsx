@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon, ReloadIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -35,14 +36,16 @@ import {
 
 import { currencies } from "./constants";
 import { addWalletSchema } from "./schemas";
-import type { AddWalletPayload } from "./types";
+import type { AddWalletPayload, Wallet } from "./types";
 
 export function AddWalletDialog({
   addWallet,
 }: {
   addWallet: (
     payload: AddWalletPayload,
-  ) => Promise<{ error: string } | undefined>;
+  ) => Promise<
+    { data: Wallet; error: null } | { error: string; data?: undefined }
+  >;
 }) {
   const form = useForm<AddWalletPayload>({
     resolver: zodResolver(addWalletSchema),
@@ -55,16 +58,19 @@ export function AddWalletDialog({
 
   const [isPending, startTransition] = useTransition();
 
+  const router = useRouter();
+
   function onSubmit(payload: AddWalletPayload) {
     startTransition(async () => {
       const result = await addWallet(payload);
 
-      if (result?.error) {
+      if (result.error !== null) {
         toast.error(result.error);
-      } else {
-        form.reset();
-        toast.success("Wallet created successfully");
+        return;
       }
+
+      form.reset();
+      router.push(`/dashboard/${result.data.id}`);
     });
   }
 
