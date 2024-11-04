@@ -40,11 +40,11 @@ export default function Wallets() {
             {isPending ? (
               <>
                 <li>
-                  <Skeleton className="h-64 w-96 rounded-xl bg-card" />
+                  <Skeleton className="h-64 w-96 rounded-xl bg-secondary" />
                 </li>
 
                 <li>
-                  <Skeleton className="h-64 w-96 rounded-xl bg-card" />
+                  <Skeleton className="h-64 w-96 rounded-xl bg-secondary" />
                 </li>
               </>
             ) : (
@@ -53,7 +53,7 @@ export default function Wallets() {
                   <li key={wallet.id}>
                     <Link
                       href={`/dashboard/${wallet.id}`}
-                      className="flex h-64 w-96 flex-col gap-2 rounded-xl bg-card p-8 text-card-foreground shadow-sm hover:bg-card/80"
+                      className="flex h-64 w-96 flex-col gap-2 rounded-xl border border-input bg-background p-8 shadow hover:bg-accent hover:text-accent-foreground"
                     >
                       <div className="flex justify-between gap-4">
                         <p className="truncate text-clip text-xl font-medium">

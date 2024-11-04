@@ -70,7 +70,7 @@ export function AddWalletDialog({
 
   return (
     <Dialog>
-      <DialogTrigger className="grid h-64 w-96 place-content-center rounded-xl bg-card text-card-foreground/40 shadow-sm hover:bg-card/80">
+      <DialogTrigger className="grid h-64 w-96 place-content-center rounded-xl border border-input bg-background text-foreground/60 shadow hover:bg-accent hover:text-accent-foreground">
         <PlusIcon className="size-24" />
       </DialogTrigger>
 
