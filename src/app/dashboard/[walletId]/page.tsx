@@ -1,6 +1,10 @@
 "use client";
 
-import { GearIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import {
+  GearIcon,
+  MagnifyingGlassIcon,
+  QuestionMarkIcon,
+} from "@radix-ui/react-icons";
 import Link from "next/link";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -8,6 +12,11 @@ import { toast } from "sonner";
 import { Header } from "@/components/header";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddTransactionDialog } from "@/features/transactions/add-transaction-dialog";
 import { columns } from "@/features/transactions/columns";
@@ -56,7 +65,32 @@ export default function Wallet({ params }: { params: { walletId: string } }) {
           </h1>
 
           {wallet && (
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
+              <HoverCard>
+                <HoverCardTrigger className="inline-flex h-9 w-9 items-center justify-center">
+                  <QuestionMarkIcon />
+                </HoverCardTrigger>
+
+                <HoverCardContent>
+                  <h3 className="font-medium">How does it work?</h3>
+
+                  <p className="mt-2 text-sm">
+                    This is your wallet. Here you can add, update, or delete
+                    transactions.
+                  </p>
+
+                  <p className="mt-2 text-sm">
+                    Get a clear picture of your financial situation by comparing
+                    your income and expenses, or by category.
+                  </p>
+
+                  <p className="mt-2 text-sm">
+                    View all transactions for this wallet, and sort them by date
+                    or amount.
+                  </p>
+                </HoverCardContent>
+              </HoverCard>
+
               <UpdateWalletDialog wallet={wallet} updateWallet={updateWallet} />
               <DeleteWalletDialog wallet={wallet} deleteWallet={deleteWallet} />
             </div>

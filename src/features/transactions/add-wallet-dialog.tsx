@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon, ReloadIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -35,14 +36,16 @@ import {
 
 import { currencies } from "./constants";
 import { addWalletSchema } from "./schemas";
-import type { AddWalletPayload } from "./types";
+import type { AddWalletPayload, Wallet } from "./types";
 
 export function AddWalletDialog({
   addWallet,
 }: {
   addWallet: (
     payload: AddWalletPayload,
-  ) => Promise<{ error: string } | undefined>;
+  ) => Promise<
+    { data: Wallet; error: null } | { error: string; data?: undefined }
+  >;
 }) {
   const form = useForm<AddWalletPayload>({
     resolver: zodResolver(addWalletSchema),
@@ -55,22 +58,25 @@ export function AddWalletDialog({
 
   const [isPending, startTransition] = useTransition();
 
+  const router = useRouter();
+
   function onSubmit(payload: AddWalletPayload) {
     startTransition(async () => {
       const result = await addWallet(payload);
 
-      if (result?.error) {
+      if (result.error !== null) {
         toast.error(result.error);
-      } else {
-        form.reset();
-        toast.success("Wallet created successfully");
+        return;
       }
+
+      form.reset();
+      router.push(`/dashboard/${result.data.id}`);
     });
   }
 
   return (
     <Dialog>
-      <DialogTrigger className="grid h-64 w-96 place-content-center rounded-xl bg-card text-card-foreground/40 shadow-sm hover:bg-card/80">
+      <DialogTrigger className="grid h-64 w-96 place-content-center rounded-xl border border-input bg-background text-foreground/60 shadow hover:bg-accent hover:text-accent-foreground">
         <PlusIcon className="size-24" />
       </DialogTrigger>
 
