@@ -43,13 +43,15 @@ export const columns: ColumnDef<Transaction & { deleteRow: () => void }>[] = [
     accessorKey: "amount",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <span>Amount</span>
-          <CaretSortIcon className="ml-2" />
-        </Button>
+        <div className="flex justify-end">
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <span>Amount</span>
+            <CaretSortIcon className="ml-2" />
+          </Button>
+        </div>
       );
     },
     cell: ({ row }) => {
