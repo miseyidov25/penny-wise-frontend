@@ -11,6 +11,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AddWalletDialog } from "@/features/transactions/add-wallet-dialog";
 import { useWallets } from "@/features/transactions/use-wallets";
 import { useAuth } from "@/hooks/auth";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 export default function Wallets() {
   useAuth({ middleware: "auth" });
@@ -36,10 +41,28 @@ export default function Wallets() {
 
       <main className="container space-y-8 py-8">
         {balance && (
-          <p className="text-center">
+          <div className="flex flex-col items-center">
             <p className="text-4xl font-extrabold tracking-tight">{balance}</p>
-            <p className="font-muted-foreground"> (total)</p>
-          </p>
+            <HoverCard>
+              <HoverCardTrigger className="text-muted-foreground underline-offset-4 hover:underline">
+                (total)
+              </HoverCardTrigger>
+
+              <HoverCardContent>
+                <h3 className="font-medium">How does it work?</h3>
+
+                <p className="mt-2 text-sm">
+                  See the combined balance from all wallets in your primary
+                  currency.
+                </p>
+
+                <p className="mt-2 text-sm">
+                  Balances refresh automatically, using the latest exchange
+                  rates to convert currencies.
+                </p>
+              </HoverCardContent>
+            </HoverCard>
+          </div>
         )}
 
         {
