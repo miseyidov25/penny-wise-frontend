@@ -15,7 +15,7 @@ import { useAuth } from "@/hooks/auth";
 export default function Wallets() {
   useAuth({ middleware: "auth" });
 
-  const { addWallet, error, isPending, wallets } = useWallets();
+  const { addWallet, balance, error, isPending, wallets } = useWallets();
 
   useEffect(() => {
     if (error) {
@@ -34,7 +34,14 @@ export default function Wallets() {
         </Link>
       </Header>
 
-      <main className="container py-8">
+      <main className="container space-y-8 py-8">
+        {balance && (
+          <p className="text-center">
+            <p className="text-4xl font-extrabold tracking-tight">{balance}</p>
+            <p className="font-muted-foreground"> (total)</p>
+          </p>
+        )}
+
         {
           <ul className="inline-flex flex-wrap justify-center gap-8">
             {isPending ? (
