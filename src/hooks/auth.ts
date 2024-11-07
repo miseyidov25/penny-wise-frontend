@@ -10,6 +10,7 @@ export interface User {
   name: string;
   email: string;
   role: string;
+  currency: string;
 }
 
 export async function fetchUser() {
@@ -90,6 +91,7 @@ export const useAuth = ({
     name?: string;
     password?: string;
     current_password?: string;
+    currency?: string;
   }): Promise<{ success: true } | { success: false; error: string }> {
     try {
       await csrf();
