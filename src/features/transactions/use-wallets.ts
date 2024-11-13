@@ -22,7 +22,7 @@ export function useWallets() {
       try {
         const response = await axiosInstance.get<{
           wallets: Wallet[];
-          total_balance: number;
+          total_balance: string;
           currency: string;
         }>("/api/wallets", { signal });
 
@@ -31,7 +31,7 @@ export function useWallets() {
           new Intl.NumberFormat("de-DE", {
             style: "currency",
             currency: response.data.currency,
-          }).format(response.data.total_balance),
+          }).format(Number(response.data.total_balance)),
         );
       } catch (error) {
         if (error instanceof AxiosError && error.name === "CanceledError") {
@@ -47,12 +47,12 @@ export function useWallets() {
 
   async function addWallet(payload: AddWalletPayload) {
     try {
-      const response = await axiosInstance.post<{ wallet: Wallet }>(
+      const response = await axiosInstance.post<Wallet>(
         "/api/wallets",
         payload,
       );
 
-      return { data: response.data.wallet, error: null };
+      return { data: response.data, error: null };
     } catch {
       return { error: "Failed to add wallet." };
     }
