@@ -60,6 +60,7 @@ export function useWallet(walletId: string) {
       );
 
       setWallet(response.data.wallet);
+      setCategories([...categories, payload.category_name]);
     } catch {
       return { error: "Failed to add transaction." };
     }
