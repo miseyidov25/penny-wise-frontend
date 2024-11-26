@@ -7,6 +7,7 @@ import type { AddWalletPayload, Wallet } from "./types";
 
 export function useWallets() {
   const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [balance, setBalance] = useState<string | null>();
   const [isPending, startTransaction] = useTransition();
 
   const [error, setError] = useState<string | null>(null);
@@ -19,12 +20,19 @@ export function useWallets() {
 
     startTransaction(async () => {
       try {
-        const response = await axiosInstance.get<{ wallets: Wallet[] }>(
-          "/api/wallets",
-          { signal },
-        );
+        const response = await axiosInstance.get<{
+          wallets: Wallet[];
+          total_balance: number;
+          currency: string;
+        }>("/api/wallets", { signal });
 
         setWallets(response.data.wallets);
+        setBalance(
+          new Intl.NumberFormat("de-DE", {
+            style: "currency",
+            currency: response.data.currency,
+          }).format(response.data.total_balance),
+        );
       } catch (error) {
         if (error instanceof AxiosError && error.name === "CanceledError") {
           return;
@@ -52,6 +60,7 @@ export function useWallets() {
 
   return {
     addWallet,
+    balance,
     error,
     isPending,
     wallets,

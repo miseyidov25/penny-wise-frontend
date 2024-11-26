@@ -7,6 +7,11 @@ import { toast } from "sonner";
 
 import { Header } from "@/components/header";
 import { buttonVariants } from "@/components/ui/button";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddWalletDialog } from "@/features/transactions/add-wallet-dialog";
 import { useWallets } from "@/features/transactions/use-wallets";
@@ -15,7 +20,7 @@ import { useAuth } from "@/hooks/auth";
 export default function Wallets() {
   useAuth({ middleware: "auth" });
 
-  const { addWallet, error, isPending, wallets } = useWallets();
+  const { addWallet, balance, error, isPending, wallets } = useWallets();
 
   useEffect(() => {
     if (error) {
@@ -34,7 +39,32 @@ export default function Wallets() {
         </Link>
       </Header>
 
-      <main className="container py-8">
+      <main className="container space-y-8 py-8">
+        {balance && (
+          <div className="flex flex-col items-center">
+            <p className="text-4xl font-extrabold tracking-tight">{balance}</p>
+            <HoverCard>
+              <HoverCardTrigger className="text-muted-foreground underline-offset-4 hover:underline">
+                (total)
+              </HoverCardTrigger>
+
+              <HoverCardContent>
+                <h3 className="font-medium">How does it work?</h3>
+
+                <p className="mt-2 text-sm">
+                  See the combined balance from all wallets in your primary
+                  currency.
+                </p>
+
+                <p className="mt-2 text-sm">
+                  Balances refresh automatically, using the latest exchange
+                  rates to convert currencies.
+                </p>
+              </HoverCardContent>
+            </HoverCard>
+          </div>
+        )}
+
         {
           <ul className="inline-flex flex-wrap justify-center gap-8">
             {isPending ? (

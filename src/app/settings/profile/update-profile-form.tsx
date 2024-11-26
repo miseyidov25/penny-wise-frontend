@@ -12,17 +12,27 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { currencies } from "@/features/transactions/constants";
 import type { User } from "@/hooks/auth";
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
   email: z.string().email(),
+  currency: z.string(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -41,6 +51,7 @@ export function UpdateProfileForm({
     defaultValues: {
       name: user.name,
       email: user.email,
+      currency: user.currency,
     },
   });
 
@@ -89,6 +100,41 @@ export function UpdateProfileForm({
                   <FormControl>
                     <Input placeholder={user.email} type="email" {...field} />
                   </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="currency"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Currency</FormLabel>
+
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a currency" />
+                      </SelectTrigger>
+                    </FormControl>
+
+                    <SelectContent>
+                      {currencies.map((currency) => (
+                        <SelectItem key={currency} value={currency}>
+                          {currency}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <FormDescription>
+                    The currency for the wallet.
+                  </FormDescription>
 
                   <FormMessage />
                 </FormItem>
