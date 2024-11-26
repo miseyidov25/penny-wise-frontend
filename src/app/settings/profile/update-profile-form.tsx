@@ -19,7 +19,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { User } from "@/hooks/auth";
 import {
   Select,
   SelectContent,
@@ -28,6 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { currencies } from "@/features/transactions/constants";
+import type { User } from "@/hooks/auth";
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),

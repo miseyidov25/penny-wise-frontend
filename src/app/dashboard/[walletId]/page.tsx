@@ -17,7 +17,6 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { useAuth } from "@/hooks/auth";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddTransactionDialog } from "@/features/transactions/add-transaction-dialog";
 import { columns } from "@/features/transactions/columns";
@@ -26,6 +25,7 @@ import { DeleteWalletDialog } from "@/features/transactions/delete-wallet-dialog
 import { TransactionTabs } from "@/features/transactions/transaction-tabs";
 import { UpdateWalletDialog } from "@/features/transactions/update-wallet-dialog";
 import { useWallet } from "@/features/transactions/use-wallet";
+import { useAuth } from "@/hooks/auth";
 
 export default function Wallet({ params }: { params: { walletId: string } }) {
   useAuth({ middleware: "auth" });

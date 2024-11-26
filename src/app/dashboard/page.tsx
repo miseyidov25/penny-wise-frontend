@@ -7,15 +7,15 @@ import { toast } from "sonner";
 
 import { Header } from "@/components/header";
 import { buttonVariants } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { AddWalletDialog } from "@/features/transactions/add-wallet-dialog";
-import { useWallets } from "@/features/transactions/use-wallets";
-import { useAuth } from "@/hooks/auth";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { AddWalletDialog } from "@/features/transactions/add-wallet-dialog";
+import { useWallets } from "@/features/transactions/use-wallets";
+import { useAuth } from "@/hooks/auth";
 
 export default function Wallets() {
   useAuth({ middleware: "auth" });
