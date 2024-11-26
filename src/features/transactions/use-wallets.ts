@@ -47,12 +47,12 @@ export function useWallets() {
 
   async function addWallet(payload: AddWalletPayload) {
     try {
-      const response = await axiosInstance.post<{ wallet: Wallet }>(
+      const response = await axiosInstance.post<Wallet>(
         "/api/wallets",
         payload,
       );
 
-      return { data: response.data.wallet, error: null };
+      return { data: response.data, error: null };
     } catch {
       return { error: "Failed to add wallet." };
     }
