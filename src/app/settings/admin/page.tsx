@@ -5,19 +5,21 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { User } from "@/hooks/auth";
 import { axiosInstance } from "@/lib/axios";
 
 export default function AdminSettings() {
   const [isPending, startTransition] = useTransition();
-
   const [users, setUsers] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isDialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     startTransition(async () => {
       try {
         const response = await axiosInstance.get<User[]>("/api/users");
-
+        
         setUsers(response.data);
       } catch {
         toast.error("Failed to fetch users.");
@@ -34,10 +36,13 @@ export default function AdminSettings() {
       );
 
       setUsers(response.data.users);
+      toast.success("User deleted successfully.");
     } catch {
       setUsers(users);
 
       toast.error("Failed to delete user.");
+    } finally {
+      setDialogOpen(false);
     }
   }
 
@@ -54,7 +59,10 @@ export default function AdminSettings() {
               </span>
 
               <Button
-                onClick={() => deleteUser(user.id)}
+                onClick={() => {
+                  setSelectedUser(user);
+                  setDialogOpen(true);
+                }}
                 variant="destructive"
                 size="sm"
               >
@@ -64,6 +72,27 @@ export default function AdminSettings() {
           ))}
         </ul>
       )}
+
+      {/* Confirmation Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+          </DialogHeader>
+          <p>Are you sure you want to delete <b>{selectedUser?.name}</b>?</p>
+          <DialogFooter>
+            <Button onClick={() => setDialogOpen(false)} variant="secondary">
+              Cancel
+            </Button>
+            <Button
+              onClick={() => selectedUser && deleteUser(selectedUser.id)}
+              variant="destructive"
+            >
+              Confirm
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
